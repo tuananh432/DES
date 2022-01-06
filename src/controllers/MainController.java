@@ -83,8 +83,6 @@ public class MainController {
             view.getTxtKey2().setEnabled(false);
             view.getTxtKey3().setEnabled(false);
             view.getBtnSave().setEnabled(false);
-            view.getBtnCrypto().setEnabled(false);
-            view.getBtnDecryp().setEnabled(false);
         }
     }
 
@@ -149,7 +147,7 @@ public class MainController {
             String key1 = view.getTxtKey1().getText();
             String key2 = view.getTxtKey2().getText();
             String key3 = view.getTxtKey3().getText();
-            if (key1.isEmpty() || key2.isEmpty() || key3.isEmpty()) {
+            if (((key1.isEmpty() || key2.isEmpty() || key3.isEmpty()) && view.getRdo3DES().isSelected()) || (key1.isEmpty() && view.getRdoDES().isSelected())) {
                 JOptionPane.showMessageDialog(view, "Vui lòng nhập đầy đủ key!");
             } else {
                 try {
@@ -176,7 +174,7 @@ public class MainController {
             String key1 = view.getTxtKey1().getText();
             String key2 = view.getTxtKey2().getText();
             String key3 = view.getTxtKey3().getText();
-            if (key1.isEmpty() || key2.isEmpty() || key3.isEmpty()) {
+            if (((key1.isEmpty() || key2.isEmpty() || key3.isEmpty()) && view.getRdo3DES().isSelected()) || (key1.isEmpty() && view.getRdoDES().isSelected())) {
                 JOptionPane.showMessageDialog(view, "Vui lòng nhập đầy đủ key!");
             } else if (!view.getRdoDES().isSelected() && !view.getRdo3DES().isSelected()) {
                 JOptionPane.showMessageDialog(view, "Vui lòng chọn kiểu mã hoá!");
