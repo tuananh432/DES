@@ -72,10 +72,8 @@ public class MainController {
         if (path != "") {
             view.getRdoDES().setEnabled(true);
             view.getRdo3DES().setEnabled(true);
-//            view.getTxtKey1().setEnabled(true);
-//            view.getTxtKey2().setEnabled(true);
-//            view.getTxtKey3().setEnabled(true);
-//            view.getBtnSave().setEnabled(true);
+            view.getBtnCrypto().setEnabled(true);
+            view.getBtnDecryp().setEnabled(true);
         } else {
             view.getRdoDES().setEnabled(false);
             view.getRdo3DES().setEnabled(false);
@@ -83,6 +81,8 @@ public class MainController {
             view.getTxtKey2().setEnabled(false);
             view.getTxtKey3().setEnabled(false);
             view.getBtnSave().setEnabled(false);
+            view.getBtnCrypto().setEnabled(false);
+            view.getBtnDecryp().setEnabled(false);
         }
     }
 
@@ -94,21 +94,26 @@ public class MainController {
             String key = view.getTxtKey1().getText();
             if (key.isEmpty()) {
                 JOptionPane.showMessageDialog(view, "Vui lòng nhập key!");
+            } else if (des.utfToBin(key).length() != 64) {
+                JOptionPane.showMessageDialog(view, "Vui lòng nhập key có độ dài 64bit! Độ dài key hiện tại là "
+                        + des.utfToBin(key).length() + " bit");
             } else {
-                try {
-                    System.out.println("------------------DES----------------");
-                    view.getPanResult().setBorder(BorderFactory.createTitledBorder("Bản mã - DES"));
-                    System.out.println("key: " + key);
-                    start_time = System.nanoTime(); // lấy mốc thời gian bắt đầu 
-                    String cipher = des.encrypt(key, des.utfToBin(text));
-                    System.out.println("Kết quả mã hoá hệ 16: " + des.binToHex(cipher));
-                    view.getAreaResult().setText(des.binToHex(cipher));
-                    end_time = System.nanoTime(); // lấy mốc thời gian kết thúc
-                    double time = (end_time - start_time) / 1e6;
-                    view.getLabTime().setText(String.valueOf(time) + " ms");
-                    view.getBtnSave().setEnabled(true);
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(view, "Lỗi input!");
+                if (view.getRdoDES().isSelected()) {
+                    try {
+                        System.out.println("------------------DES----------------");
+                        view.getPanResult().setBorder(BorderFactory.createTitledBorder("Bản mã - DES"));
+                        System.out.println("key: " + key);
+                        start_time = System.nanoTime(); // lấy mốc thời gian bắt đầu
+                        String cipher = des.encrypt(key, des.utfToBin(text));
+                        System.out.println("Kết quả mã DES: " + des.binToHex(cipher));
+                        view.getAreaResult().setText(des.binToHex(cipher));
+                        end_time = System.nanoTime(); // lấy mốc thời gian kết thúc
+                        double time = (end_time - start_time) / 1e6;
+                        view.getLabTime().setText(String.valueOf(time) + " ms");
+                        view.getBtnSave().setEnabled(true);
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(view, "Lỗi input!");
+                    }
                 }
             }
         });
@@ -117,23 +122,26 @@ public class MainController {
             String key = view.getTxtKey1().getText();
             if (key.isEmpty()) {
                 JOptionPane.showMessageDialog(view, "Vui lòng nhập key!");
-            } else if (!view.getRdoDES().isSelected() && !view.getRdo3DES().isSelected()) {
-                JOptionPane.showMessageDialog(view, "Vui lòng chọn kiểu mã hoá!");
+            } else if (des.utfToBin(key).length() != 64) {
+                JOptionPane.showMessageDialog(view, "Vui lòng nhập key có độ dài 64bit! Độ dài key hiện tại là "
+                        + des.utfToBin(key).length() + " bit");
             } else {
-                try {
-                    System.out.println("----------------DES----------------");
-                    view.getPanResult().setBorder(BorderFactory.createTitledBorder("Bản rõ - DES"));
-                    System.out.println("key: " + key);
-                    start_time = System.nanoTime(); // lấy mốc thời gian bắt đầu
-                    String decryp = des.decrypt(key, des.hexToBin(text));
-                    System.out.println("Kết quả giải mã: " + des.binToUTF(decryp));
-                    view.getAreaResult().setText(des.binToUTF(decryp));
-                    end_time = System.nanoTime(); // lấy mốc thời gian kết thúc
-                    double time = (end_time - start_time) / 1e6;
-                    view.getLabTime().setText(String.valueOf(time) + " ms");
-                    view.getBtnSave().setEnabled(true);
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(view, "Lỗi input!");
+                if (view.getRdoDES().isSelected()) {
+                    try {
+                        System.out.println("----------------DES----------------");
+                        view.getPanResult().setBorder(BorderFactory.createTitledBorder("Bản rõ - DES"));
+                        System.out.println("key: " + key);
+                        start_time = System.nanoTime(); // lấy mốc thời gian bắt đầu
+                        String decryp = des.decrypt(key, des.hexToBin(text));
+                        System.out.println("Kết quả giải mã DES: " + des.binToUTF(decryp));
+                        view.getAreaResult().setText(des.binToUTF(decryp));
+                        end_time = System.nanoTime(); // lấy mốc thời gian kết thúc
+                        double time = (end_time - start_time) / 1e6;
+                        view.getLabTime().setText(String.valueOf(time) + " ms");
+                        view.getBtnSave().setEnabled(true);
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(view, "Lỗi input!");
+                    }
                 }
             }
         });
@@ -147,8 +155,18 @@ public class MainController {
             String key1 = view.getTxtKey1().getText();
             String key2 = view.getTxtKey2().getText();
             String key3 = view.getTxtKey3().getText();
-            if (((key1.isEmpty() || key2.isEmpty() || key3.isEmpty()) && view.getRdo3DES().isSelected()) || (key1.isEmpty() && view.getRdoDES().isSelected())) {
+            if (((key1.isEmpty() || key2.isEmpty() || key3.isEmpty()) && view.getRdo3DES().isSelected())
+                    || (key1.isEmpty() && view.getRdoDES().isSelected())) {
                 JOptionPane.showMessageDialog(view, "Vui lòng nhập đầy đủ key!");
+            } else if (des.utfToBin(key1).length() != 64) {
+                JOptionPane.showMessageDialog(view, "Vui lòng nhập key1 có độ dài 64bit! Độ dài key1 hiện tại là "
+                        + des.utfToBin(key1).length() + " bit");
+            } else if (des.utfToBin(key2).length() != 64) {
+                JOptionPane.showMessageDialog(view, "Vui lòng nhập key2 có độ dài 64bit! Độ dài key2 hiện tại là "
+                        + des.utfToBin(key2).length() + " bit");
+            } else if (des.utfToBin(key3).length() != 64) {
+                JOptionPane.showMessageDialog(view, "Vui lòng nhập key3 có độ dài 64bit! Độ dài key3 hiện tại là "
+                        + des.utfToBin(key3).length() + " bit");
             } else {
                 try {
                     System.out.println("--------------TRIPLE DES---------------");
@@ -156,9 +174,10 @@ public class MainController {
                     System.out.println("key1: " + key1);
                     System.out.println("key2: " + key2);
                     System.out.println("key3: " + key3);
-                    start_time = System.nanoTime(); // lấy mốc thời gian bắt đầu 
-                    String des_3_encry = des.encrypt(key1, des.decrypt(key2, des.encrypt(key3, des.utfToBin(text))));
-                    System.out.println("Kết quả mã hoá 3DES hệ 16: " + des.binToHex(des_3_encry));
+                    start_time = System.nanoTime(); // lấy mốc thời gian bắt đầu
+                    String des_3_encry = des.encrypt(key1, des.encrypt(key2, des.encrypt(key3, des.utfToBin(text))));
+                    System.out.println("Kết quả mã hoá 3DES: " + des.binToHex(des_3_encry));
+                    view.getAreaResult().setText("");
                     view.getAreaResult().setText(des.binToHex(des_3_encry));
                     end_time = System.nanoTime(); // lấy mốc thời gian kết thúc
                     double time = (end_time - start_time) / 1e6;
@@ -174,7 +193,8 @@ public class MainController {
             String key1 = view.getTxtKey1().getText();
             String key2 = view.getTxtKey2().getText();
             String key3 = view.getTxtKey3().getText();
-            if (((key1.isEmpty() || key2.isEmpty() || key3.isEmpty()) && view.getRdo3DES().isSelected()) || (key1.isEmpty() && view.getRdoDES().isSelected())) {
+            if (((key1.isEmpty() || key2.isEmpty() || key3.isEmpty()) && view.getRdo3DES().isSelected())
+                    || (key1.isEmpty() && view.getRdoDES().isSelected())) {
                 JOptionPane.showMessageDialog(view, "Vui lòng nhập đầy đủ key!");
             } else if (!view.getRdoDES().isSelected() && !view.getRdo3DES().isSelected()) {
                 JOptionPane.showMessageDialog(view, "Vui lòng chọn kiểu mã hoá!");
@@ -186,7 +206,7 @@ public class MainController {
                     System.out.println("key2: " + key2);
                     System.out.println("key3: " + key3);
                     start_time = System.nanoTime(); // lấy mốc thời gian bắt đầu
-                    String des_3_decry = des.decrypt(key3, des.encrypt(key2, des.decrypt(key1, des.hexToBin(text))));
+                    String des_3_decry = des.decrypt(key3, des.decrypt(key2, des.decrypt(key1, des.hexToBin(text))));
                     System.out.println("Kết quả giải mã 3DES: " + des.binToUTF(des_3_decry));
                     view.getAreaResult().setText(des.binToUTF(des_3_decry));
                     end_time = System.nanoTime(); // lấy mốc thời gian kết thúc
@@ -206,16 +226,24 @@ public class MainController {
         jFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         int returnValue = jFileChooser.showSaveDialog(null);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
-            if (jFileChooser.getSelectedFile().isFile()) {
-                System.out.println("Bạn đã chọn: " + jFileChooser.getSelectedFile());
-                try {
-                    FileWriter fw = new FileWriter(jFileChooser.getSelectedFile().toPath().toString().replace("\\", "\\\\"));
+            System.out.println(jFileChooser.getSelectedFile());
+            try {
+                if (jFileChooser.getSelectedFile().isFile()) {
+                    FileWriter fw = new FileWriter(
+                            jFileChooser.getSelectedFile().toPath().toString().replace("\\", "\\\\"));
                     fw.write(view.getAreaResult().getText());
                     fw.close();
-                    JOptionPane.showMessageDialog(view, "Đã lưu thành công!");
-                } catch (Exception e) {
-                    System.out.println(e);
+                } else {
+                    String path = jFileChooser.getSelectedFile().toString().replace("\\", "\\\\");
+                    if (!path.contains(".txt"))
+                        path += ".txt";
+                    FileWriter fw = new FileWriter(path);
+                    fw.write(view.getAreaResult().getText());
+                    fw.close();
                 }
+                JOptionPane.showMessageDialog(view, "Đã lưu thành công!");
+            } catch (Exception e) {
+                System.out.println(e);
             }
         }
     }
