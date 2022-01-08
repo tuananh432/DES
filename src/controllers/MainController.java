@@ -167,6 +167,8 @@ public class MainController {
             } else if (des.utfToBin(key3).length() != 64) {
                 JOptionPane.showMessageDialog(view, "Vui lòng nhập key3 có độ dài 64bit! Độ dài key3 hiện tại là "
                         + des.utfToBin(key3).length() + " bit");
+            } else if (key1.equals(key2) || key1.equals(key3) || key2.equals(key3)) {
+                JOptionPane.showMessageDialog(view, "Các key không được trùng nhau!");
             } else {
                 try {
                     System.out.println("--------------TRIPLE DES---------------");
@@ -196,8 +198,8 @@ public class MainController {
             if (((key1.isEmpty() || key2.isEmpty() || key3.isEmpty()) && view.getRdo3DES().isSelected())
                     || (key1.isEmpty() && view.getRdoDES().isSelected())) {
                 JOptionPane.showMessageDialog(view, "Vui lòng nhập đầy đủ key!");
-            } else if (!view.getRdoDES().isSelected() && !view.getRdo3DES().isSelected()) {
-                JOptionPane.showMessageDialog(view, "Vui lòng chọn kiểu mã hoá!");
+            } else if (key1.equals(key2) || key1.equals(key3) || key2.equals(key3)) {
+                JOptionPane.showMessageDialog(view, "Các key không được trùng nhau!");
             } else {
                 try {
                     System.out.println("------------- TRIPLE DES----------------");
@@ -235,8 +237,9 @@ public class MainController {
                     fw.close();
                 } else {
                     String path = jFileChooser.getSelectedFile().toString().replace("\\", "\\\\");
-                    if (!path.contains(".txt"))
+                    if (!path.contains(".txt")) {
                         path += ".txt";
+                    }
                     FileWriter fw = new FileWriter(path);
                     fw.write(view.getAreaResult().getText());
                     fw.close();
